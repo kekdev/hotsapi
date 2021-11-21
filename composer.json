@@ -7,7 +7,6 @@
     "require": {
         "php": ">=7.0",
         "barryvdh/laravel-cors": "^0.9.3",
-        "barryvdh/laravel-ide-helper": "^2.4",
         "doctrine/dbal": "^2.5",
         "fideloper/proxy": "^3.3",
         "google/cloud-bigquery": "^1.4",
@@ -62,11 +61,9 @@
         ]
     },
     "config": {
+        "apcu-autoloader": true,
         "preferred-install": "dist",
         "sort-packages": true,
-        "optimize-autoloader": true,
-        "platform": {
-            "php": "7.0"
-        }
+        "optimize-autoloader": true
     }
 }

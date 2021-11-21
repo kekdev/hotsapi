@@ -1,4 +1,4 @@
-init: docker-stop docker-pull docker-build docker-start db-init
+init: docker-stop docker-pull docker-build install-deps docker-start
 
 start: docker-start
 stop: docker-stop
@@ -16,7 +16,10 @@ docker-stop:
 	docker compose down --remove-orphans
 
 db-init:
-	docker compose run --rm artisan php artisan migrate:refresh --seed
+	docker compose run --rm php-cli php artisan migrate:refresh --seed
+
+install-deps:
+	docker compose run --rm php-cli composer install
 
 build:
 	docker build -f docker/heroprotocol/Dockerfile -t hotsapi/heroprotocol .
