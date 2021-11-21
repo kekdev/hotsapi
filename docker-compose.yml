@@ -18,18 +18,10 @@ services:
     build:
       context: ./docker/dev
       dockerfile: php-cli/Dockerfile
-    volumes:
-      - ./:/app
-
-  artisan:
-    build:
-      context: .
-      dockerfile: docker/Dockerfile.development
-    entrypoint: ["php", "artisan"]
     environment:
+      - APP_URL=http://localhost:8080
       - APP_ENV=local
       - APP_DEBUG=true
-      - APP_KEY=base64:YmFzZTY0X2tleV9fYmFzZTY0
       - DB_CONNECTION=mysql
       - DB_HOST=mariadb
       - DB_PORT=3306
@@ -37,14 +29,29 @@ services:
       - DB_USERNAME=hotsapi
       - DB_PASSWORD=secret
     volumes:
-      - .:/var/www/hotsapi
+      - ./:/app
 
-  hotsapi:
+  php-fpm:
     build:
-      context: .
-      dockerfile: docker/Dockerfile.development
+      context: ./docker/dev
+      dockerfile: php-fpm/Dockerfile
+    environment:
+      - APP_URL=http://localhost:8080
+      - APP_ENV=local
+      - APP_DEBUG=true
+      - DB_CONNECTION=mysql
+      - DB_HOST=mariadb
+      - DB_PORT=3306
+      - DB_DATABASE=hotsapi
+      - DB_USERNAME=hotsapi
+      - DB_PASSWORD=secret
+    volumes:
+      - .:/app
+
+  nginx:
+    build:
+      context: ./docker/dev/nginx
     ports:
       - "8080:80"
     volumes:
-      - .:/var/www/hotsapi
-
+      - ./:/app
