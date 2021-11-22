@@ -55,3 +55,9 @@ services:
       - "8080:80"
     volumes:
       - ./:/app
+
+  heroprotocol:
+    build:
+      context: ./docker/common/heroprotocol
+    volumes:
+      - ./:/app
