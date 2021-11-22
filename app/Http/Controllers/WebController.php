@@ -37,7 +37,7 @@ class WebController extends Controller
     {
         $data = Cache::remember('setupLink', 60, function () {
             try {
-                $release = json_decode((new Client())->get('https://api.github.com/repos/poma/Hotsapi.Uploader/releases/latest')->getBody());
+                $release = json_decode((new Client())->get('https://api.github.com/repos/poma/Hotsapi.Uploader/releases/latest')->getBody(), null, 512, JSON_THROW_ON_ERROR);
                 return [
                     'url' => collect($release->assets)->where('name', 'HotsApiUploaderSetup.exe')->first()->browser_download_url,
                     'zip' => collect($release->assets)->where('name', 'HotsApi.zip')->first()->browser_download_url,

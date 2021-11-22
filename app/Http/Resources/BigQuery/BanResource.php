@@ -11,7 +11,7 @@ use Illuminate\Support\Collection;
  * @package App\Http\Resources
  * @mixin \App\Ban
  */
-class BanResource extends Resource
+class BanResource extends \Illuminate\Http\Resources\Json\JsonResource
 {
     /**
      * Transform the resource into an array.

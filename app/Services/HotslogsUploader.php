@@ -10,16 +10,13 @@ use Aws\S3\S3Client;
 
 class HotslogsUploader
 {
-    const BASE_URL = "https://www.hotslogs.com/UploadFile?Source=HotsApi";
+    public const BASE_URL = "https://www.hotslogs.com/UploadFile?Source=HotsApi";
 
-    const STATUS_SUCCESS = "success";
-    const STATUS_ERROR = "error";
-    const STATUS_SKIPPED = "skipped";
+    public const STATUS_SUCCESS = "success";
+    public const STATUS_ERROR = "error";
+    public const STATUS_SKIPPED = "skipped";
 
-    /**
-     * @var HotslogsUpload
-     */
-    private $upload;
+    private \App\HotslogsUpload $upload;
 
     /**
      * HotslogsUploader constructor
@@ -62,14 +59,14 @@ class HotslogsUploader
             return true;
         }
 
-        if ($this->isDuplicate($this->upload->replay->fingerprint)) {
+        if (static::isDuplicate($this->upload->replay->fingerprint)) {
             Log::debug("HotslogsUploader: job " . $this->upload->id . " marked as a duplicate");
             $this->setStatus(self::STATUS_SUCCESS, "duplicate");
             return true;
         }
 
         try {
-            $filename = $this->GUID() . ".StormReplay";
+            $filename = self::GUID() . ".StormReplay";
             $this->s3copy(env('AWS_BUCKET'), $this->upload->replay->filename . ".StormReplay", 'heroesreplays', $filename);
             $resp = strtolower(Guzzle::get(self::BASE_URL . "&FileName=$filename")->getBody()->getContents());
             switch ($resp) {
@@ -107,10 +104,9 @@ class HotslogsUploader
     /**
      * Check whether fingerprint if duplicate with hotslogs API
      *
-     * @param string $fingerprint
      * @return bool
      */
-    public static function isDuplicate($fingerprint)
+    public static function isDuplicate(string $fingerprint)
     {
         try {
             $result = strtolower(Guzzle::get(self::BASE_URL . "&ReplayHash=$fingerprint")->getBody()->getContents());
@@ -135,8 +131,8 @@ class HotslogsUploader
     }
 
     // Hotslogs public bucket credentials
-    const ACCESS_KEY = "AKIAIESBHEUH4KAAG4UA";
-    const SECRET_KEY = "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";
+    public const ACCESS_KEY = "AKIAIESBHEUH4KAAG4UA";
+    public const SECRET_KEY = "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";
 
     /**
      * Copies files from our S3 bucket to hotslogs
@@ -189,6 +185,6 @@ class HotslogsUploader
      */
     private static function GUID()
     {
-        return sprintf('%04X%04X-%04X-%04X-%04X-%04X%04X%04X', mt_rand(0, 65535), mt_rand(0, 65535), mt_rand(0, 65535), mt_rand(16384, 20479), mt_rand(32768, 49151), mt_rand(0, 65535), mt_rand(0, 65535), mt_rand(0, 65535));
+        return sprintf('%04X%04X-%04X-%04X-%04X-%04X%04X%04X', random_int(0, 65535), random_int(0, 65535), random_int(0, 65535), random_int(16384, 20479), random_int(32768, 49151), random_int(0, 65535), random_int(0, 65535), random_int(0, 65535));
     }
 }

@@ -17,12 +17,9 @@ class HotslogsUploadJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    const HOTSLOGS_MAINTENANCE = 'hotslogs_maintenance';
+    public const HOTSLOGS_MAINTENANCE = 'hotslogs_maintenance';
 
-    /**
-     * @var HotslogsUpload
-     */
-    private $upload;
+    private \App\HotslogsUpload $upload;
 
     /**
      * Create a new job instance.

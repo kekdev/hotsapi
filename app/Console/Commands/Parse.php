@@ -33,21 +33,15 @@ class Parse extends Command
      * @var string
      */
     protected $description = 'Command description';
-    /**
-     * @var ParserService
-     */
-    private $replayService;
 
-    private $run = true;
+    private bool $run = true;
 
     /**
      * Create a new command instance.
-     * @param ReplayService $replayService
      */
-    public function __construct(ReplayService $replayService)
+    public function __construct(private ReplayService $replayService)
     {
         parent::__construct();
-        $this->replayService = $replayService;
     }
 
     /**
@@ -79,9 +73,6 @@ class Parse extends Command
         }
     }
 
-    /**
-     * @param Replay $replay
-     */
     public function parse(Replay $replay)
     {
         $this->info("Parsing replay id=$replay->id, file=$replay->filename");

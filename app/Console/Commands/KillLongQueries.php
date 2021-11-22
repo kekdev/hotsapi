@@ -42,20 +42,20 @@ class KillLongQueries extends Command
         foreach (collect($processes)->pluck('id') as $process) {
             try {
                 \DB::connection('mysql_slave')->statement("KILL ?", [$process]);
-            } catch (QueryException $e) {
+            } catch (QueryException) {
                 // thread don't exist, do nothing
             }
         }
-        $this->info("Killed " . count($processes) . " queries");
+        $this->info("Killed " . (is_countable($processes) ? count($processes) : 0) . " queries");
 
         $processes = \DB::select("SELECT id FROM INFORMATION_SCHEMA.PROCESSLIST WHERE user = ? AND command = 'execute' AND time > 60", [env('DB_USERNAME')]);
         foreach (collect($processes)->pluck('id') as $process) {
             try {
                 \DB::statement("KILL ?", [$process]);
-            } catch (QueryException $e) {
+            } catch (QueryException) {
                 // thread don't exist, do nothing
             }
         }
-        $this->info("Killed " . count($processes) . " queries");
+        $this->info("Killed " . (is_countable($processes) ? count($processes) : 0) . " queries");
     }
 }

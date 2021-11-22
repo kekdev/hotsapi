@@ -15,10 +15,7 @@ use Storage;
 
 class ReplayService
 {
-    /**
-     * @var ParserService
-     */
-    private $parser;
+    private \App\Services\ParserService $parser;
 
     /**
      * ReplayService constructor.
@@ -34,10 +31,9 @@ class ReplayService
      * Store replay file
      *
      * @param \Illuminate\Http\File|\Illuminate\Http\UploadedFile $file
-     * @param bool $uploadToHotslogs
      * @return \stdClass
      */
-    public function store($file, $uploadToHotslogs = false)
+    public function store(\Symfony\Component\HttpFoundation\File\File $file, bool $uploadToHotslogs = false)
     {
         $parseResult = $this->parser->analyze($file->getRealPath());
 

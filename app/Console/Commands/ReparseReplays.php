@@ -27,19 +27,11 @@ class ReparseReplays extends Command
     protected $description = 'Redo parsing for replays';
 
     /**
-     * @var ParserService
-     */
-    private $parser;
-
-    /**
      * Create a new command instance.
-     *
-     * @param ParserService $replay
      */
-    public function __construct(ParserService $replay)
+    public function __construct(private ParserService $parser)
     {
         parent::__construct();
-        $this->parser = $replay;
     }
 
     /**
@@ -53,7 +45,7 @@ class ReparseReplays extends Command
         $max_id = $this->argument('max_id');
         $this->info("Reparsing replays, id from $min_id to $max_id");
         //Replay::where('id', '>=', $min_id)->where('id', '<=', $max_id)->with('players')->chunk(100, function ($x) { return $this->reparse($x); });
-        $this->getBrokenReplays()->reverse()->each(function ($x) { return $this->reparse([$x]); });
+        $this->getBrokenReplays()->reverse()->each(fn($x) => $this->reparse([$x]));
     }
 
     public function getBrokenReplays()
@@ -66,7 +58,7 @@ class ReparseReplays extends Command
         ]);
 
         $ids = $replays->flatten(1)->pluck('id')->unique();
-        $stats = $replays->map(function($item, $key) { return "$key: " . count($item);})->implode("\n");
+        $stats = $replays->map(fn($item, $key) => "$key: " . (is_countable($item) ? count($item) : 0))->implode("\n");
         $this->info("Broken replay summary:\n$stats\nUnique: " . count($ids));
         return Replay::whereIn('id', $ids)->get();
     }
@@ -99,8 +91,8 @@ class ReparseReplays extends Command
                         $replay->players []= $replay->players()->create($playerData);
                     }
                 }
-                if (count($replay->players) != 10) {
-                    $this->error("Wrong player count " . count($replay->players) . ", replay id=$replay->id, file=$replay->filename");
+                if ((is_countable($replay->players) ? count($replay->players) : 0) != 10) {
+                    $this->error("Wrong player count " . (is_countable($replay->players) ? count($replay->players) : 0) . ", replay id=$replay->id, file=$replay->filename");
                 }
             } catch (\Exception $e) {
                 $this->error("Error parsing file id=$replay->id, file=$replay->filename: $e");

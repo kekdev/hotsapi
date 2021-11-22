@@ -21,7 +21,7 @@ class BigQuery
         $table = $bigQuery->dataset('hotsapi')->table('replays');
         $res = new ReplayResource($replay);
         // todo optimize next line
-        $row = json_decode(json_encode($res->toResponse(app('request'))->getData()), true);
+        $row = json_decode(json_encode($res->toResponse(app('request'))->getData(), JSON_THROW_ON_ERROR), true, 512, JSON_THROW_ON_ERROR);
         $result = $table->insertRow($row, ['insertId' => $replay->parsed_id]);
 
         if (!$result->isSuccessful()) {

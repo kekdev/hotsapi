@@ -11,7 +11,7 @@ use Illuminate\Support\Collection;
  * @package App\Http\Resources
  * @mixin \App\Player
  */
-class PlayerResource extends Resource
+class PlayerResource extends \Illuminate\Http\Resources\Json\JsonResource
 {
     /**
      * Transform the resource into an array.

@@ -10,7 +10,7 @@ use Illuminate\Http\Resources\Json\Resource;
  * @package App\Http\Resources
  * @mixin \App\Replay
  */
-class ReplayResource extends Resource
+class ReplayResource extends \Illuminate\Http\Resources\Json\JsonResource
 {
     /**
      * Transform the resource into an array.

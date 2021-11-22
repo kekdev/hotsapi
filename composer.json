@@ -4,25 +4,22 @@
     "license": "MIT",
     "type": "project",
     "require": {
-        "php": ">=7.1",
-        "barryvdh/laravel-cors": "^0.9.3",
-        "doctrine/dbal": "^2.5",
-        "fideloper/proxy": "^3.3",
+        "php": "^8.0",
+        "ext-json": "*",
+        "barryvdh/laravel-cors": "^2.0",
+        "fideloper/proxy": "^4.4",
         "google/cloud-bigquery": "^1.4",
-        "kozz/laravel-guzzle-provider": "~6.0",
-        "laravel/framework": "5.5.*",
-        "laravel/tinker": "~1.0",
+        "kozz/laravel-guzzle-provider": "^7.0",
+        "laravel/framework": "^8.73",
+        "laravel/tinker": "^2.6",
         "league/flysystem-aws-s3-v3": "^1.0",
         "predis/predis": "^1.1",
         "swagger-api/swagger-ui": "^3.2",
-        "yadakhov/insert-on-duplicate-key": "^1.2",
-        "ext-json": "*"
+        "yadakhov/insert-on-duplicate-key": "^1.2"
     },
     "require-dev": {
         "filp/whoops": "~2.0",
-        "fzaninotto/faker": "~1.4",
-        "mockery/mockery": "0.9.*",
-        "phpunit/phpunit": "~6.0",
+        "phpunit/phpunit": "^9.5",
         "rector/rector": "^0.12.4"
     },
     "autoload": {

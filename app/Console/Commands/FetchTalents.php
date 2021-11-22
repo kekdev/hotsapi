@@ -26,7 +26,7 @@ class FetchTalents extends Command
      */
     protected $description = 'Command description';
 
-    private $cloneDir = "/tmp/heroes-talents";
+    private string $cloneDir = "/tmp/heroes-talents";
 
     /**
      * Create a new command instance.
@@ -46,7 +46,7 @@ class FetchTalents extends Command
     public function handle()
     {
         $this->fetchHeroes();
-        list($heroes, $abilities, $talents) = $this->processHeroFiles();
+        [$heroes, $abilities, $talents] = $this->processHeroFiles();
 
         $this->info('FetchTalents: Saving heroes data...');
         Hero::insertOnDuplicateKey($heroes);
@@ -77,7 +77,7 @@ class FetchTalents extends Command
         $talents = [];
         foreach ($files as $file) {
             $content = file_get_contents("$this->cloneDir" . '/hero/' . $file);
-            $data = json_decode($content);
+            $data = json_decode($content, null, 512, JSON_THROW_ON_ERROR);
 
             $heroes[] = [
                 'id' => $data->id,

@@ -10,7 +10,7 @@ use Illuminate\Http\Resources\Json\Resource;
  * @package App\Http\Resources
  * @mixin \App\Player
  */
-class PlayerResource extends Resource
+class PlayerResource extends \Illuminate\Http\Resources\Json\JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -31,7 +31,7 @@ class PlayerResource extends Resource
             'battletag' => $this->battletag,
         ];
         if ($this->relationLoaded('talents')) {
-            $result['talents'] = count($this->talents) ? $this->talents->mapWithKeys(function($x) { return [$x->pivot->level => $x->name]; }) : null;
+            $result['talents'] = count($this->talents) ? $this->talents->mapWithKeys(fn($x) => [$x->pivot->level => $x->name]) : null;
         }
         if ($this->relationLoaded('score')) {
             $result['score'] = $this->score;

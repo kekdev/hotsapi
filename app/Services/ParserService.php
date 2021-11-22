@@ -16,30 +16,30 @@ use Symfony\Component\Process\Process;
 
 class ParserService
 {
-    const STATUS_SUCCESS = "Success";
-    const STATUS_DUPLICATE = "Duplicate";
-    const STATUS_AI_DETECTED = "AiDetected";
-    const STATUS_CUSTOM_GAME = "CustomGame";
-    const STATUS_PTR_REGION = "PtrRegion";
-    const STATUS_TOO_OLD = "TooOld";
-    const STATUS_UPLOAD_ERROR = "UploadError";
-    const STATUS_INCOMPLETE = "Incomplete";
+    public const STATUS_SUCCESS = "Success";
+    public const STATUS_DUPLICATE = "Duplicate";
+    public const STATUS_AI_DETECTED = "AiDetected";
+    public const STATUS_CUSTOM_GAME = "CustomGame";
+    public const STATUS_PTR_REGION = "PtrRegion";
+    public const STATUS_TOO_OLD = "TooOld";
+    public const STATUS_UPLOAD_ERROR = "UploadError";
+    public const STATUS_INCOMPLETE = "Incomplete";
 
-    const MIN_SUPPORTED_BUILD = 43905;
+    public const MIN_SUPPORTED_BUILD = 43905;
 
-    const ATTR_CHARACTER_LEVEL = 4008;
-    const ATTR_PLAYER_TYPE = 500;
+    public const ATTR_CHARACTER_LEVEL = 4008;
+    public const ATTR_PLAYER_TYPE = 500;
 
-    const GAME_TYPE_QUICK_MATCH = "QuickMatch";
-    const GAME_TYPE_UNRANKED_DRAFT = "UnrankedDraft";
-    const GAME_TYPE_HERO_LEAGUE = "HeroLeague";
-    const GAME_TYPE_TEAM_LEAGUE = "TeamLeague";
-    const GAME_TYPE_STORM_LEAGUE = "StormLeague";
-    const GAME_TYPE_BRAWL = "Brawl";
-    const GAME_TYPE_AI = "AI";
-    const GAME_TYPE_UNKNOWN = "Unknown";
+    public const GAME_TYPE_QUICK_MATCH = "QuickMatch";
+    public const GAME_TYPE_UNRANKED_DRAFT = "UnrankedDraft";
+    public const GAME_TYPE_HERO_LEAGUE = "HeroLeague";
+    public const GAME_TYPE_TEAM_LEAGUE = "TeamLeague";
+    public const GAME_TYPE_STORM_LEAGUE = "StormLeague";
+    public const GAME_TYPE_BRAWL = "Brawl";
+    public const GAME_TYPE_AI = "AI";
+    public const GAME_TYPE_UNKNOWN = "Unknown";
 
-    const GAMES_WITH_BANS = [self::GAME_TYPE_UNRANKED_DRAFT, self::GAME_TYPE_HERO_LEAGUE, self::GAME_TYPE_TEAM_LEAGUE, self::GAME_TYPE_STORM_LEAGUE];
+    public const GAMES_WITH_BANS = [self::GAME_TYPE_UNRANKED_DRAFT, self::GAME_TYPE_HERO_LEAGUE, self::GAME_TYPE_TEAM_LEAGUE, self::GAME_TYPE_STORM_LEAGUE];
 
     /**
      * Talent cache
@@ -47,7 +47,7 @@ class ParserService
      * @var \Illuminate\Database\Eloquent\Collection|\App\Talent[]
      */
     private $talents;
-    const TALENT_LEVELS = [1, 4, 7, 10, 13, 16, 20];
+    public const TALENT_LEVELS = [1, 4, 7, 10, 13, 16, 20];
 
     /**
      * Hero cache
@@ -60,11 +60,10 @@ class ParserService
     /**
      * Extract metadata from replay
      *
-     * @param string $filename
      * @param bool $skipDuplicateCheck Don't check for duplicates. Needed for reparse command.
      * @return stdClass
      */
-    public function analyze($filename, $skipDuplicateCheck = false)
+    public function analyze(string $filename, bool $skipDuplicateCheck = false)
     {
         // todo this big method needs refactoring
         $result = new stdClass();
@@ -225,7 +224,7 @@ class ParserService
     public function FiletimeToDatetime($time)
     {
         // Filetime: Contains a 64-bit value representing the number of 100-nanosecond intervals since January 1, 1601 (UTC).
-        return Carbon::createFromDate(1601, 1, 1)->startOfDay()->addSeconds($time / 10000000);
+        return Carbon::createFromDate(1601, 1, 1)->startOfDay()->addSeconds($time / 10_000_000);
     }
 
     /**
@@ -322,7 +321,7 @@ class ParserService
                 // check whether version is too new or too old
                 $process = new Process("heroprotocol --json --header '$filename'");
                 $process->mustRun();
-                $result = json_decode($process->getOutput());
+                $result = json_decode($process->getOutput(), null, 512, JSON_THROW_ON_ERROR);
                 if ($result->m_version->m_build < self::MIN_SUPPORTED_BUILD) {
                     return false;
                 } else {
@@ -334,10 +333,10 @@ class ParserService
         $output = $process->getOutput();
         $lines = explode(PHP_EOL, $output);
         $result = (object)[
-            "header" => json_decode($lines[0]),
-            "details" => json_decode($lines[1]),
-            "initdata" => json_decode($lines[3]), // lines[2] contains cache entries
-            "attributeevents" => json_decode($lines[4]),
+            "header" => json_decode($lines[0], null, 512, JSON_THROW_ON_ERROR),
+            "details" => json_decode($lines[1], null, 512, JSON_THROW_ON_ERROR),
+            "initdata" => json_decode($lines[3], null, 512, JSON_THROW_ON_ERROR), // lines[2] contains cache entries
+            "attributeevents" => json_decode($lines[4], null, 512, JSON_THROW_ON_ERROR),
         ];
         if (!$result->header || !$result->details || !$result->initdata || !$result->attributeevents) {
             throw new Exception("Error parsing parser output:\n$output\n");
@@ -352,7 +351,7 @@ class ParserService
             throw new ProcessFailedException($process);
         }
         $output = $process->getOutput();
-        $result = json_decode($output);
+        $result = json_decode($output, null, 512, JSON_THROW_ON_ERROR);
         if (!$result) {
             throw new Exception("Error parsing parser output:\n$output\n");
         }

@@ -20,28 +20,13 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        $this->app->singleton(ParserService::class, function () {
-            return new ParserService();
-        });
+        $this->app->singleton(ParserService::class, fn() => new ParserService());
 
-        $this->app->singleton(ReplayService::class, function () {
-            return new ReplayService(new ParserService());
-        });
+        $this->app->singleton(ReplayService::class, fn() => new ReplayService(new ParserService()));
 
-        $this->app->singleton(BigQuery::class, function () {
-            return new BigQuery();
-        });
+        $this->app->singleton(BigQuery::class, fn() => new BigQuery());
 
-        # migration fix for mysql < 5.7.7, needed for travis
-        Schema::defaultStringLength(255);
-
-        Resource::withoutWrapping();
-
-        if (env('DB_LOG_QUERIES', false)) {
-            DB::listen(function ($query) {
-                Log::info('Query', [$query->sql, $query->time, $query->connectionName]);
-            });
-        }
+        \Illuminate\Http\Resources\Json\JsonResource::withoutWrapping();
     }
 
     /**

@@ -54,7 +54,7 @@ class FetchTranslations extends Command
         $heroes = Hero::with('translations')->get();
 
         $this->info('FetchTranslations: Retrieving heroes data from HeroesProfile...');
-        $json = json_decode(\Guzzle::get('https://api.heroesprofile.com/Heroes')->getBody());
+        $json = json_decode(\Guzzle::get('https://api.heroesprofile.com/Heroes')->getBody(), null, 512, JSON_THROW_ON_ERROR);
 
         $this->info('FetchTranslations: Processing hero data...');
         $translations = [];
@@ -65,7 +65,7 @@ class FetchTranslations extends Command
                 $dbHero = Hero::create(['name' => $hero->name, 'short_name' => $shortName, 'attribute_id' => $hero->attribute_id]);
             }
 
-            $heroTranslations = array_map(function ($x) { return mb_strtolower($x); }, $hero->translations);
+            $heroTranslations = array_map(fn($x) => mb_strtolower($x), $hero->translations);
             $heroTranslations[] = mb_strtolower($hero->name);
             $heroTranslations = array_unique($heroTranslations);
             foreach ($heroTranslations as $heroTranslation) {

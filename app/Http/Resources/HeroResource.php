@@ -10,7 +10,7 @@ use Illuminate\Http\Resources\Json\Resource;
  * @package App\Http\Resources
  * @mixin \App\Hero
  */
-class HeroResource extends Resource
+class HeroResource extends \Illuminate\Http\Resources\Json\JsonResource
 {
     /**
      * Transform the resource into an array.

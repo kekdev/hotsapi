@@ -19,7 +19,7 @@ class DatabaseSeeder extends Seeder
     }
 
     private function loadMapTranslations() {
-        $mapTranslations = json_decode(file_get_contents(dirname(__FILE__) . '/map_translations.json'));
+        $mapTranslations = json_decode(file_get_contents(__DIR__ . '/map_translations.json'), null, 512, JSON_THROW_ON_ERROR);
         $translations = [];
         foreach ($mapTranslations as $mapTranslation) {
             $map = Map::firstOrNew(['name' => $mapTranslation->name]);
