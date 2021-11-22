@@ -18,6 +18,14 @@ return static function (ContainerConfigurator $containerConfigurator): void {
         __DIR__ . '/tests',
     ]);
 
-    $containerConfigurator->import(\Rector\Set\ValueObject\LevelSetList::UP_TO_PHP_80);
-    $containerConfigurator->import(\Rector\Laravel\Set\LaravelLevelSetList::UP_TO_LARAVEL_80);
+    $containerConfigurator->services()
+        ->set(SetList::class)
+        ->args([
+            [
+                SetList::PHP_80,
+                LaravelSetList::LARAVEL_80,
+                \Rector\Set\ValueObject\LevelSetList::UP_TO_PHP_80,
+                \Rector\Laravel\Set\LaravelLevelSetList::UP_TO_LARAVEL_80,
+            ],
+        ]);
 };
